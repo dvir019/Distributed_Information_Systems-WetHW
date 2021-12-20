@@ -3,7 +3,7 @@ public class Neighbor {
     private final String ip;
     private final int udpPort;
     private final int tcpPort;
-    private final int edgeWeight;
+    private final int edgeWeight;  // TODO: Delete final or delete the field
 
     public Neighbor(int name, String ip, int udpPort, int tcpPort, int edgeWeight) {
         this.name = name;

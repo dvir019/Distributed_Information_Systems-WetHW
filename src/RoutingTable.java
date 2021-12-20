@@ -8,7 +8,7 @@ public class RoutingTable {
         this.numOfRouters = numOfRouters;
         this.routerName = routerName;
         initializeDistances(diameterBound);
-
+        initializeNext(firstNeighborName);
     }
 
     private void initializeDistances(int diameterBound) {
@@ -40,11 +40,12 @@ public class RoutingTable {
             if (i == routerName - 1) {
                 sb.append("0;None");
             } else {
-                sb.append(distances[i] + ";" + next[i]);  // TODO: Make sure there are no off by one errors!
+                sb.append(distances[i]).append(";").append(next[i]);  // TODO: Make sure there are no off by one errors!
             }
             if (i < numOfRouters - 1) {  // TODO: Maybe delete this
                 sb.append("\n");
             }
         }
+        return sb.toString();
     }
 }
