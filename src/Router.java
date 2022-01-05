@@ -25,6 +25,8 @@ public class Router extends Thread {
     @Override
     public void run() {
         // TODO: implement run
+        UdpListener u = new UdpListener(udpPort, name);
+        u.start();
     }
 
     private void initializeFromFile(String fileName) {

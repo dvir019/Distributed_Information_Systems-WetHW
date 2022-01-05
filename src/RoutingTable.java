@@ -1,6 +1,6 @@
 public class RoutingTable {
-    private int numOfRouters;
-    private int routerName;
+    private final int numOfRouters;
+    private final int routerName;
     private int[] distances;
     private int[] next;
 
