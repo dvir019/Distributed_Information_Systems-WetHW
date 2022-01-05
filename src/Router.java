@@ -25,7 +25,7 @@ public class Router extends Thread {
     @Override
     public void run() {
         // TODO: implement run
-        UdpListener u = new UdpListener(udpPort, name);
+        UdpListener u = new UdpListener(udpPort, name);  // TODO: Delete it (just for testing if udp listeners get message from clients)
         u.start();
     }
 
