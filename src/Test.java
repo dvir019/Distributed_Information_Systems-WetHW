@@ -86,7 +86,7 @@ class Sender extends Thread
                     System.out.println("Error in received message form ip=" + this.ipToSend + " port=" + this.udpPortToSend
                             + ". Expected: " + this.replyMessage + "but got " + messageReceived);
                 } else {
-                    System.out.println("Got my correct reply!");
+                    System.out.println("Got my correct reply! (" + messageReceived + ")");
                 }
             }
             socket.close();
