@@ -11,12 +11,20 @@ public class Router extends Thread {
     private int numOfRouters;
     private int diameterBound;  // TODO: Maybe delete the field, and make initializeFromFile return the bound.
     private int firstNeighbor;
+    private final String tableFile;
+    private final String forwardFile;
     private RoutingTable routingTable;
     private Map<Integer, Neighbor> neighborsMap;
+
+    public final Object routingTableLock = new Object();
+    public final Object forwardFileLock = new Object();
+    public final Object tableFileLock = new Object();
 
     public Router(int name, String inputFilePrefix, String tableFilePrefix, String forwardingFilePrefix) {
         this.name = name;
         String inputFileName = inputFilePrefix + name + ".txt";
+        tableFile = tableFilePrefix + name + ".txt";
+        forwardFile = forwardingFilePrefix + name + ".txt";
         neighborsMap = new HashMap<>();
         initializeFromFile(inputFileName);
         routingTable = new RoutingTable(numOfRouters, name, diameterBound, firstNeighbor);
@@ -25,8 +33,36 @@ public class Router extends Thread {
     @Override
     public void run() {
         // TODO: implement run
-        UdpListener u = new UdpListener(udpPort, name);  // TODO: Delete it (just for testing if udp listeners get message from clients)
+        UdpListener u = new UdpListener(this);  // TODO: Delete it (just for testing if udp listeners get message from clients)
         u.start();
+    }
+
+    public int getRouterName() {
+        return name;
+    }
+
+    public int getUdpPort() {
+        return udpPort;
+    }
+
+    public int getTcpPort() {
+        return tcpPort;
+    }
+
+    public RoutingTable getRoutingTable() {
+        return routingTable;
+    }
+
+    public Map<Integer, Neighbor> getNeighborsMap() {
+        return neighborsMap;
+    }
+
+    public String getTableFile() {
+        return tableFile;
+    }
+
+    public String getForwardFile() {
+        return forwardFile;
     }
 
     private void initializeFromFile(String fileName) {
@@ -61,5 +97,7 @@ public class Router extends Thread {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+
     }
 }
