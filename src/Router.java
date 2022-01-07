@@ -31,7 +31,9 @@ public class Router extends Thread {
         neighborsMap = new HashMap<>();
         initializeFromFile(inputFileName);
         routingTable = new RoutingTable(numOfRouters, name, diameterBound, firstNeighbor);
-        updateNumber = new AtomicInteger(0);
+        buildFirstDistancesVector();
+        updateNumber = new AtomicInteger(1);
+
     }
 
     @Override
@@ -110,7 +112,19 @@ public class Router extends Thread {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
 
-
+    private void buildFirstDistancesVector() {
+        for (Neighbor neighbor : neighborsMap.values()) {
+            int neighborName = neighbor.getName();
+            int newWeight = CreateInput.weightsMatrix[neighborName][neighborName][1];
+            neighbor.setEdgeWeight(newWeight);
+            for (int x = 1; x < numOfRouters; x++) {
+                if (routingTable.getNextRouter(x) == neighborName) {
+                    int oldDistance = routingTable.getDistance(x);
+                    routingTable.setDistance(x, oldDistance - neighbor.getOldEdgeWeight() + newWeight);
+                }
+            }
+        }
     }
 }
