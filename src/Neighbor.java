@@ -40,8 +40,12 @@ public class Neighbor {  // TODO: (Maybe) Add synchronized to edgeWeight getter 
     }
 
     public void setEdgeWeight(int edgeWeight) {
-        this.oldEdgeWeight = this.edgeWeight;  // TODO: Figure out what to do in the first update
-        this.edgeWeight = edgeWeight;
+        if (edgeWeight != -1) {
+            this.oldEdgeWeight = this.edgeWeight;  // TODO: Figure out what to do in the first update
+            this.edgeWeight = edgeWeight;
+        } else {
+            this.oldEdgeWeight = this.edgeWeight;
+        }
         // TODO: Verify if those two lines need to be in the same function, based on line 7 of the algorithm
     }
 }

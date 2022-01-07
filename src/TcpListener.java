@@ -24,6 +24,5 @@ public class TcpListener extends Thread {
                 e.printStackTrace();
             }
         }
-
     }
 }

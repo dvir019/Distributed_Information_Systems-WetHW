@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Router extends Thread {
     private final int name;
@@ -15,7 +16,9 @@ public class Router extends Thread {
     private final String forwardFile;
     private RoutingTable routingTable;
     private Map<Integer, Neighbor> neighborsMap;
+    public AtomicInteger updateNumber;
 
+    // Locks
     public final Object routingTableLock = new Object();
     public final Object forwardFileLock = new Object();
     public final Object tableFileLock = new Object();
@@ -28,6 +31,7 @@ public class Router extends Thread {
         neighborsMap = new HashMap<>();
         initializeFromFile(inputFileName);
         routingTable = new RoutingTable(numOfRouters, name, diameterBound, firstNeighbor);
+        updateNumber = new AtomicInteger(0);
     }
 
     @Override
@@ -64,6 +68,15 @@ public class Router extends Thread {
     public String getForwardFile() {
         return forwardFile;
     }
+
+    public int getNumOfRouters() {
+        return numOfRouters;
+    }
+
+    public Neighbor getNeighbor(int neighborName) {
+        return neighborsMap.get(neighborName);
+    }
+
 
     private void initializeFromFile(String fileName) {
         File inputFile = new File(fileName);

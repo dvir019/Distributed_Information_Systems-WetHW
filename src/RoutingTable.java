@@ -33,6 +33,18 @@ public class RoutingTable {
         }
     }
 
+    public int getNextRouter(int routerName) {
+        return next[routerName - 1];
+    }
+
+    public int getDistance(int routerName) {
+        return distances[routerName - 1];
+    }
+
+    public void setDistance(int routerName, int newWeight) {
+        distances[routerName - 1] = newWeight;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
