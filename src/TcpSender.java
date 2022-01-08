@@ -24,7 +24,12 @@ public class TcpSender extends Thread {
             DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
             outputStream.writeInt(round);
+            outputStream.flush();
             String message = inputStream.readUTF();
+            System.out.println("Got tcp message: " + message);
+            if (message.contains("-")) {
+                System.out.println("Hey!");
+            }
             du = Arrays.stream(message.substring(1, message.length()-1).split(", ")).mapToInt(Integer::parseInt).toArray();
         } catch (IOException e) {
             e.printStackTrace();

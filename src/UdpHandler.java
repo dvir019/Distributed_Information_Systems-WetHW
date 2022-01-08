@@ -94,31 +94,43 @@ public class UdpHandler extends Thread {
                     int edgeWeight = neighbor.getEdgeWeight();
                     int distance = dus.get(neighborName)[x - 1];
                     int distanceToX = edgeWeight + distance;
+                    if (distanceToX <= 0) {
+                        System.out.println("Fuck!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    }
                     if (distanceToX < minDistanceToX) {
                         minDistanceToX = distanceToX;
                         minNeighbor = neighborName;
                     }
                 }
-                routingTable.setNext(x, minNeighbor);
-                routingTable.setDistance(x, minDistanceToX);
+                synchronized (router.routingTableLock) {  // Add synchronized (router.routingTableLock)
+                    routingTable.setNext(x, minNeighbor);
+                    routingTable.setDistance(x, minDistanceToX);
+                }
             }
         }
-
+        synchronized (router.routingTableLock) {  // Add synchronized (router.routingTableLock)
+            routingTable.setDistancesAfterAsDistances();
+        }
 
         for (Neighbor neighbor : router.getNeighborsMap().values()) {
             int neighborName = neighbor.getName();
             int newWeight = CreateInput.weightsMatrix[routerName][neighborName][round];
             neighbor.setEdgeWeight(newWeight);
+            newWeight = neighbor.getEdgeWeight();
             for (int x = 1; x <= router.getNumOfRouters(); x++) {
                 if (x != routerName) {
-                    if (routingTable.getNextRouter(x) == neighborName) {
-                        int oldDistance = routingTable.getDistance(x);
-                        routingTable.setDistancesAfter(x, oldDistance - neighbor.getOldEdgeWeight() + newWeight);
+                    synchronized (router.routingTableLock) {  // Add synchronized (router.routingTableLock)
+                        if (routingTable.getNextRouter(x) == neighborName) {
+                            int oldDistance = routingTable.getDistance(x);
+                            routingTable.setDistancesAfter(x, oldDistance - neighbor.getOldEdgeWeight() + newWeight);
+                        }
                     }
                 }
             }
         }
+        System.out.println("Incrementing!");
         router.updateNumber.incrementAndGet();
+        sendFinish();
     }
 
     private void shutDown() {

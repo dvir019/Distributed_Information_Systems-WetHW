@@ -15,22 +15,22 @@ public class RoutingTable {
 
     private void initializeDistances(int diameterBound) {
         distances = new int[numOfRouters];
-        for (int i = 0; i < numOfRouters; i++) {
-            if (i == routerName - 1) {
-                distances[i] = 0;
+        for (int i = 1; i <= numOfRouters; i++) {
+            if (i == routerName) {
+                distances[i - 1] = 0;
             } else {
-                distances[i] = diameterBound;
+                distances[i - 1] = diameterBound;
             }
         }
     }
 
     private void initializeNext(int firstNeighborName) {
         next = new int[numOfRouters];
-        for (int i = 0; i < numOfRouters; i++) {
-            if (i == routerName - 1) {
-                next[i] = -1;  // TODO: Determine what to put in here
+        for (int i = 1; i <= numOfRouters; i++) {
+            if (i == routerName) {
+                next[i - 1] = -1;  // TODO: Determine what to put in here
             } else {
-                next[i] = firstNeighborName;
+                next[i - 1] = firstNeighborName;
             }
         }
     }
@@ -55,8 +55,16 @@ public class RoutingTable {
         distances = distancesAfter.clone();
     }
 
+    public void setDistancesAfterAsDistances() {
+        distancesAfter = distances.clone();
+    }
+
     public void setNext(int destinationName, int neighborName) {
         next[destinationName - 1] = neighborName;
+    }
+
+    public int[] getDistancesAfter() {
+        return distancesAfter;
     }
 
     @Override

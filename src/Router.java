@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -33,14 +34,24 @@ public class Router extends Thread {
         routingTable = new RoutingTable(numOfRouters, name, diameterBound, firstNeighbor);
         buildFirstDistancesVector();
         updateNumber = new AtomicInteger(1);
+        System.out.println("Neighbors of router " + name + ": " + Arrays.toString(neighborsMap.keySet().toArray()));
 
     }
 
     @Override
     public void run() {
         // TODO: implement run
-        UdpListener u = new UdpListener(this);  // TODO: Delete it (just for testing if udp listeners get message from clients)
-        u.start();
+        UdpListener udpListener = new UdpListener(this);  // TODO: Delete it (just for testing if udp listeners get message from clients)
+        TcpListener tcpListener = new TcpListener(this);
+        udpListener.start();
+        tcpListener.start();
+
+        try {
+            udpListener.join();
+            tcpListener.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getRouterName() {
@@ -117,12 +128,15 @@ public class Router extends Thread {
     private void buildFirstDistancesVector() {
         for (Neighbor neighbor : neighborsMap.values()) {
             int neighborName = neighbor.getName();
-            int newWeight = CreateInput.weightsMatrix[neighborName][neighborName][1];
+            int newWeight = CreateInput.weightsMatrix[name][neighborName][1];
             neighbor.setEdgeWeight(newWeight);
-            for (int x = 1; x < numOfRouters; x++) {
+            newWeight = neighbor.getEdgeWeight();
+            for (int x = 1; x <= numOfRouters; x++) {
                 if (routingTable.getNextRouter(x) == neighborName) {
                     int oldDistance = routingTable.getDistance(x);
-                    routingTable.setDistance(x, oldDistance - neighbor.getOldEdgeWeight() + newWeight);
+                    int oldEdgeWeight = neighbor.getOldEdgeWeight();
+                    routingTable.setDistancesAfter(x, oldDistance - oldEdgeWeight + newWeight);
+
                 }
             }
         }

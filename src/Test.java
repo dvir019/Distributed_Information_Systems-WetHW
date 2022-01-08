@@ -4,6 +4,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -139,6 +140,8 @@ public class Test
                 Constants.SELECT_NEIGHBOR_PROBABILITY, Constants.CHANGE_WEIGHT_PROBABILITY, Constants.FIRST_UPD_PORT,
                 Constants.FIRST_TCP_PORT, Constants.MAXIMUM_WEIGHT, Constants.NETWORK_SIZE,
                 Constants.TEST_SIZE + 1, random);
+
+        System.out.println(Arrays.deepToString(CreateInput.weightsMatrix));
 
         // start all routers
         Router[] routers = new Router[Constants.NETWORK_SIZE + 1];
